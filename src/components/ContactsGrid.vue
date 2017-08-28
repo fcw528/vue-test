@@ -86,7 +86,7 @@
         this.parent_instance.list(this)
       },
       show (row) {
-        // todo
+        this.parent_instance.show(row.id)
       },
       update (row) {
         // todo

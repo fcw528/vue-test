@@ -35,6 +35,21 @@
             this_.$Notice.error({title: '错误', desc: '获取联系人列表出现错误！' + error, duration: 3})
             grid.data = []
           })
+      },
+      // show contact
+      show (id) {
+        var this_ = this
+        Axios.get(this.url + id)
+          .then(function (response) {
+            var contact = response.data
+            this_.$Modal.info({
+              title: '联系人信息',
+              content: `first_name：${contact.first_name}<br>last_name：${contact.last_name}<br>email：${contact.email}<br>description：${contact.description}<br>`
+            })
+          })
+          .catch(function (error) {
+            this_.$Notice.error({title: '错误', desc: '获取联系人信息出现错误！' + error, duration: 3})
+          })
       }
     }
   }
