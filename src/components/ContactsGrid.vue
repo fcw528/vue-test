@@ -93,7 +93,15 @@
         this.parent_instance.editContact(contact)
       },
       delete (row) {
-        // todo
+        this.$Modal.confirm({
+          title: '删除确认',
+          content: '<p>确定要删除该联系人？</p>',
+          loading: true,
+          onOk: () => {
+            this.parent_instance.delete(this, row.id)
+            this.$Modal.remove()
+          }
+        })
       }
     }
   }

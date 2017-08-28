@@ -93,6 +93,19 @@
               dialog.showDialog = true
             }, 0)
           })
+      },
+      // delete contact
+      delete (grid, id) {
+        var this_ = this
+        Axios.delete(this.url + id)
+          .then(function (response) {
+            // 刷新网格数据
+            grid.getList()
+            this_.$Notice.success({title: '成功', desc: '删除联系人成功！', duration: 3})
+          })
+          .catch(function (error) {
+            this_.$Notice.error({title: '错误', desc: '删除联系人信息出现错误！' + error, duration: 3})
+          })
       }
     }
   }
