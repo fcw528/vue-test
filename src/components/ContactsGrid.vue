@@ -80,9 +80,10 @@
         data: this.getList()
       }
     },
+    props: ['parent_instance'],
     methods: {
       getList () {
-        // todo
+        this.parent_instance.list(this)
       },
       show (row) {
         // todo
