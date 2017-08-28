@@ -89,7 +89,8 @@
         this.parent_instance.show(row.id)
       },
       update (row) {
-        // todo
+        var contact = { id: row.id, first_name: row.first_name, last_name: row.last_name, email: row.email, description: row.description }
+        this.parent_instance.editContact(contact)
       },
       delete (row) {
         // todo

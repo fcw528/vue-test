@@ -53,16 +53,35 @@
     props: ['parent_instance'],
     methods: {
       createContact () {
-        // todo
+        this.createOrEdit = 'create'
+        this.formValidate = this.getBlankData()
+        this.showDialog = true
       },
       editContact (contract) {
-        // todo
+        this.createOrEdit = 'edit'
+        this.formValidate = contract
+        this.showDialog = true
       },
       getBlankData () {
         return { first_name: '', last_name: '', email: '', description: '' }
       },
       ok () {
-        // todo
+        var this_ = this
+        this.$refs['formValidate'].validate((valid) => {
+          if (valid) {
+            if (this_.createOrEdit === 'create') {
+              this_.parent_instance.create(this_, this_.formValidate)
+            } else {
+              this_.parent_instance.update(this_, this_.formValidate)
+            }
+          } else {
+            this.$Notice.warning({title: '失败', desc: '保存联系人失败,请检查输入字段！', duration: 3})
+            // 效验失败，继续处理，模态处窗体无中止特性，采用此法不关闭窗口
+            setTimeout(() => {
+              this_.showDialog = true
+            }, 0)
+          }
+        })
       }
     }
   }
