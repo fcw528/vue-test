@@ -36,23 +36,67 @@
       },
       // contact list
       list (grid) {
-        __service.list(grid, this)
+        var _this = this
+        __service.list(function (response) {
+          grid.data = response.data
+        }, function (error) {
+          _this.$Notice.error({title: '错误', desc: '获取联系人列表出现错误！' + error, duration: 3})
+          grid.data = []
+        })
       },
       // show contact
       show (id) {
-        __service.show(id, this)
+        var _this = this
+        __service.show(id, function (response) {
+          var contact = response.data
+          _this.$Modal.info({
+            title: '联系人信息',
+            content: `first_name：${contact.first_name}<br>last_name：${contact.last_name}<br>email：${contact.email}<br>description：${contact.description}<br>`
+          })
+        }, function (error) {
+          _this.$Notice.error({title: '错误', desc: '获取联系人信息出现错误！' + error, duration: 3})
+        })
       },
       // create contact
       create (dialog, contact) {
-        __service.create(dialog, contact, this)
+        var _this = this
+        __service.create(contact, function (response) {
+          // 刷新网格数据
+          _this.$refs.contactGridRef.getList()
+          _this.$Notice.success({title: '成功', desc: '创建联系人成功！', duration: 3})
+        }, function (error) {
+          _this.$Notice.error({title: '错误', desc: '创建联系人出现错误！' + error, duration: 3})
+          // 创建错误，继续处理，模态处窗体无中止特性，采用此法不关闭窗口
+          setTimeout(() => {
+            dialog.showDialog = true
+          }, 0)
+        })
       },
-      // edit contact
+      // update contact
       update (dialog, contact) {
-        __service.update(dialog, contact, this)
+        var _this = this
+        __service.update(contact, function (response) {
+          // 刷新网格数据
+          _this.$refs.contactGridRef.getList()
+          _this.$Notice.success({title: '成功', desc: '修改联系人信息成功！', duration: 3})
+        }, function (error) {
+          _this.$Notice.error({title: '错误', desc: '修改联系人信息出现错误！' + error, duration: 3})
+          // 更新错误，继续处理，模态处窗体无中止特性，采用此法不关闭窗口
+          setTimeout(() => {
+            dialog.showDialog = true
+          }, 0)
+        })
       },
       // delete contact
       delete (grid, id) {
-        __service.delete(grid, id, this)
+        var _this = this
+        __service.delete(id, function (response) {
+          // 刷新网格数据
+          grid.getList()
+          _this.$Notice.success({title: '成功', desc: '删除联系人成功！', duration: 3})
+        }, function (error) {
+          _this.$Notice.error({title: '错误', desc: '删除联系人信息出现错误！' + error, duration: 3})
+        })
       }
     }
   }
