@@ -13,15 +13,16 @@
   </div>
 </template>
 <script>
-  import Axios from 'axios'
   import ContactsGrid from '@/components/ContactsGrid'
   import ContactDialog from '@/components/ContactDialog'
+  import { ContactsService } from '@/services/contacts.service'
+
+  const __service = new ContactsService()
 
   export default {
     name: 'contacts',
     data () {
       return {
-        url: 'http://127.0.0.1:8089/contacts/',
         instance: this
       }
     },
@@ -35,77 +36,23 @@
       },
       // contact list
       list (grid) {
-        var this_ = this
-        Axios.get(this.url)
-          .then(function (response) {
-            grid.data = response.data
-          })
-          .catch(function (error) {
-            this_.$Notice.error({title: '错误', desc: '获取联系人列表出现错误！' + error, duration: 3})
-            grid.data = []
-          })
+        __service.list(grid, this)
       },
       // show contact
       show (id) {
-        var this_ = this
-        Axios.get(this.url + id)
-          .then(function (response) {
-            var contact = response.data
-            this_.$Modal.info({
-              title: '联系人信息',
-              content: `first_name：${contact.first_name}<br>last_name：${contact.last_name}<br>email：${contact.email}<br>description：${contact.description}<br>`
-            })
-          })
-          .catch(function (error) {
-            this_.$Notice.error({title: '错误', desc: '获取联系人信息出现错误！' + error, duration: 3})
-          })
+        __service.show(id, this)
       },
       // create contact
       create (dialog, contact) {
-        var this_ = this
-        Axios.post(this.url, contact)
-          .then(function (response) {
-            // 刷新网格数据
-            this_.$refs.contactGridRef.getList()
-            this_.$Notice.success({title: '成功', desc: '创建联系人成功！', duration: 3})
-          })
-          .catch(function (error) {
-            this_.$Notice.error({title: '错误', desc: '创建联系人出现错误！' + error, duration: 3})
-            // 创建错误，继续处理，模态处窗体无中止特性，采用此法不关闭窗口
-            setTimeout(() => {
-              dialog.showDialog = true
-            }, 0)
-          })
+        __service.create(dialog, contact, this)
       },
       // edit contact
       update (dialog, contact) {
-        var this_ = this
-        Axios.put(this.url + contact.id, contact)
-          .then(function (response) {
-            // 刷新网格数据
-            this_.$refs.contactGridRef.getList()
-            this_.$Notice.success({title: '成功', desc: '修改联系人信息成功！', duration: 3})
-          })
-          .catch(function (error) {
-            this_.$Notice.error({title: '错误', desc: '修改联系人信息出现错误！' + error, duration: 3})
-            // 更新错误，继续处理，模态处窗体无中止特性，采用此法不关闭窗口
-            setTimeout(() => {
-              dialog.showDialog = true
-            }, 0)
-          })
+        __service.update(dialog, contact, this)
       },
       // delete contact
       delete (grid, id) {
-        var this_ = this
-        Axios.delete(this.url + id)
-          .then(function (response) {
-            // 刷新网格数据
-            grid.getList()
-            this_.$Notice.success({title: '成功', desc: '删除联系人成功！', duration: 3})
-          })
-          .catch(function (error) {
-            this_.$Notice.error({title: '错误', desc: '删除联系人信息出现错误！' + error, duration: 3})
-          })
+        __service.delete(grid, id, this)
       }
     }
   }
